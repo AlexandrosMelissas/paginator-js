@@ -1,15 +1,6 @@
 import { EntityManager } from "@mikro-orm/core"
 import { EntityManager as MysqlEntityManager } from "@mikro-orm/mysql"
 
-export interface ConnectionSettings {
-  user: string
-  port: number
-  client: "mysql" | "mongo"
-  password: string
-  host: string
-  database: string
-}
-
 export type Library = "mikro-orm" | "type-orm" | "knex-js"
 
 export enum PaginationOrder {
