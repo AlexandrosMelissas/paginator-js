@@ -2,13 +2,15 @@
   "dependencies": {
     "@mikro-orm/core": "^5.1.1",
     "@mikro-orm/mysql": "^5.1.1",
-    "knex": "^1.0.4"
+    "knex": "^1.0.4",
+    "typeorm": "^0.3.4"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
     "eslint": "^8.11.0",
     "prettier": "^2.6.0",
+    "ts-node-dev": "^1.1.8",
     "typescript": "^4.6.2"
   }
 }
