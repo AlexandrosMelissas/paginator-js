@@ -1,16 +1,26 @@
 {
   "dependencies": {
+    "@mikro-orm/cli": "^5.1.1",
     "@mikro-orm/core": "^5.1.1",
+    "@mikro-orm/migrations": "^5.1.1",
     "@mikro-orm/mysql": "^5.1.1",
     "knex": "^1.0.4",
-    "typeorm": "^0.3.4"
+    "typeorm": "^0.3.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.16.0",
     "@typescript-eslint/parser": "^5.16.0",
     "eslint": "^8.11.0",
     "prettier": "^2.6.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.6.2"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./mikro-orm.config.ts"
+    ]
   }
 }

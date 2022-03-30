@@ -5,15 +5,12 @@ import {
   QueryOrder,
   QueryOrderMap,
 } from "@mikro-orm/core"
-import {
-  DataSource,
-  EntityManager as TypeOrmEntityManager,
-  EntityTarget,
-} from "typeorm"
+import { DataSource, EntityManager as TypeOrmEntityManager } from "typeorm"
 import { AutoPath } from "@mikro-orm/core/typings"
 import { EntityManager as MikroOrmEntityManager } from "@mikro-orm/mysql"
 import { PaginatedData, QueryInput } from "./typings"
-import { MikroUser } from "./User"
+import { User } from "./User.mikro"
+import { User as TypeUser } from "./User.type"
 
 // export const paginate = async <T>(
 //   manager: MikroOrmEntityManager | TypeOrmEntityManager,
@@ -53,27 +50,39 @@ export const test = async () => {
   const typeOrmDataSource = new DataSource({
     username: "root",
     password: "root",
-    database: "paginator",
+    database: "paginator-mikro",
     type: "mysql",
+    synchronize: true,
+    entities: ["src/*.type.ts"],
   })
 
   await typeOrmDataSource.initialize()
 
-  const _: TypeOrmEntityManager = typeOrmDataSource.createEntityManager()
+  const typeManager: TypeOrmEntityManager =
+    typeOrmDataSource.createEntityManager()
 
-  const mikro = await MikroORM.init({
-    user: "root",
-    password: "root",
-    dbName: "paginator",
-    type: "mysql",
+  const newTypeUser = typeManager.create(TypeUser, {
+    name: "alex",
+    address: "Aristotelous",
+    age: 24,
+    username: "alex1",
   })
 
+  await typeManager.insert(TypeUser, newTypeUser)
+
+  const mikro = await MikroORM.init()
+
   const MikroOrmManager: MikroOrmEntityManager =
-    mikro.em as MikroOrmEntityManager
+    mikro.em.fork() as MikroOrmEntityManager
 
-  const k = MikroOrmManager.create(MikroUser, { name: "alex", id: "1" })
+  const newUser = MikroOrmManager.create(User, {
+    name: "alex",
+    address: "Aristotelous",
+    age: 24,
+    username: "alex1",
+  })
 
-  await MikroOrmManager.persistAndFlush(k)
+  await MikroOrmManager.persistAndFlush(newUser)
 }
 
 test().catch((e) => {
