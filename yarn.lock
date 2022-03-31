@@ -17,6 +17,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@faker-js/faker@^6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-6.1.1.tgz#adf002d986e1751daadfcf65d1cc03944dab3ced"
+  integrity sha512-8yq1LJVGn4GY06riLddIU1LbJm15yjt46hjfkpWNpH/mqdciPOBVzicKOJxzQNrGgVHVBxcdm7sgwjI/Y19MYw==
+
 "@humanwhocodes/config-array@^0.9.2":
   version "0.9.5"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.9.5.tgz"
@@ -31,7 +36,7 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@mikro-orm/cli@^5.1.1":
+"@mikro-orm/cli@^5.0.0":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@mikro-orm/cli/-/cli-5.1.1.tgz#8ac9a79a272928dea9904687d83e63e3070fc47e"
   integrity sha512-XWrYPTYeN+z/MZmUPvUJO0e3+gAHH1dtAotEpWndJBab0LmLJJp5R9bnwRGtzJNxeMVdDHbib5mCyj6RGKFZIA==
@@ -43,7 +48,7 @@
     yargonaut "1.1.4"
     yargs "15.4.1"
 
-"@mikro-orm/core@^5.1.1":
+"@mikro-orm/core@^5.0.0", "@mikro-orm/core@^5.1.1":
   version "5.1.1"
   resolved "https://registry.npmjs.org/@mikro-orm/core/-/core-5.1.1.tgz"
   integrity sha512-k4rpjwZJxQu5aKeBqPj2Hnvjnivo/GClkuWxX++786lTf7LNspeqeNYa9dl8elzsaWSSzEh0wr06X8JesxNIBw==
@@ -64,7 +69,7 @@
     knex "1.0.4"
     sqlstring "2.3.3"
 
-"@mikro-orm/migrations@^5.1.1":
+"@mikro-orm/migrations@^5.0.0":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@mikro-orm/migrations/-/migrations-5.1.1.tgz#f4425614fc91cbe035c28d264c2af23691a6112e"
   integrity sha512-mtk8lcVIap9vkejdXmoZiIE8K4p373Os7cEZcfOYVg6sUpZC21Ac6IMhOobKN0rLU/F5akfgZAQx1CRmGLhJhQ==
@@ -74,9 +79,9 @@
     knex "1.0.4"
     umzug "3.0.0"
 
-"@mikro-orm/mysql@^5.1.1":
+"@mikro-orm/mysql@^5.0.0":
   version "5.1.1"
-  resolved "https://registry.npmjs.org/@mikro-orm/mysql/-/mysql-5.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/@mikro-orm/mysql/-/mysql-5.1.1.tgz#e46a686476ba55155bc6b322fcd9b9153cf7df2c"
   integrity sha512-DEcfACLrmVK70H9fvA0zRFnPwEMpNmlhFZlygR0cI7O5zjis6IniO2HBfdowYP5e5gHgMWXwkeayDTlet+Q+Mg==
   dependencies:
     "@mikro-orm/knex" "^5.1.1"

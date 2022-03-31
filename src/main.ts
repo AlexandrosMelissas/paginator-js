@@ -1,88 +1,132 @@
 import {
   EntityName,
   FilterQuery,
-  MikroORM,
   QueryOrder,
   QueryOrderMap,
+  MikroORM,
 } from "@mikro-orm/core"
-import { DataSource, EntityManager as TypeOrmEntityManager } from "typeorm"
-import { AutoPath } from "@mikro-orm/core/typings"
 import { EntityManager as MikroOrmEntityManager } from "@mikro-orm/mysql"
+import {
+  EntityManager as TypeOrmEntityManager,
+  EntityTarget,
+  FindOptionsRelations,
+  FindOptionsWhere,
+} from "typeorm"
+import { AutoPath } from "@mikro-orm/core/typings"
 import { PaginatedData, QueryInput } from "./typings"
-import { User } from "./User.mikro"
-import { User as TypeUser } from "./User.type"
+export const paginate = async <
+  T,
+  M extends MikroOrmEntityManager | TypeOrmEntityManager,
+  P extends string
+>(
+  manager: M,
+  entity: M extends MikroOrmEntityManager ? EntityName<T> : EntityTarget<T>,
+  queryInput: QueryInput,
+  whereQuery: M extends MikroOrmEntityManager
+    ? FilterQuery<T>
+    : FindOptionsWhere<T>,
+  populate?: M extends MikroOrmEntityManager
+    ? readonly AutoPath<T, P>[] | boolean
+    : FindOptionsRelations<T>
+): Promise<PaginatedData<T>> => {
+  if (manager instanceof MikroOrmEntityManager) {
+    return await paginateMikroOrm(
+      manager,
+      entity as EntityName<T>,
+      queryInput,
+      whereQuery as FilterQuery<T>,
+      populate as readonly AutoPath<T, P>[] | boolean
+    )
+  }
 
-// export const paginate = async <T>(
-//   manager: MikroOrmEntityManager | TypeOrmEntityManager,
-//   entity: EntityName<T> | EntityTarget<T>,
-//   queryInput: QueryInput,
-//   options?:
-// ) => {}
+  return paginateTypeOrm(
+    manager,
+    entity as EntityTarget<T>,
+    queryInput,
+    whereQuery as FindOptionsWhere<T>,
+    populate as FindOptionsRelations<T>
+  )
+}
+
+export const paginateTypeOrm = async <T>(
+  manager: TypeOrmEntityManager,
+  entity: EntityTarget<T>,
+  queryInput: QueryInput,
+  where: FindOptionsWhere<T>,
+  relations?: FindOptionsRelations<T>
+): Promise<PaginatedData<T>> => {
+  const [data, total] = await manager.findAndCount(entity, {
+    where,
+    take: queryInput.limit,
+    skip: queryInput.offset ?? queryInput.page * (queryInput.limit ?? 0),
+    relations,
+  })
+
+  const paginatedData = new PaginatedData<T>(data, total, queryInput.limit)
+
+  return paginatedData
+}
 
 export const paginateMikroOrm = async <T, P extends string>(
   manager: MikroOrmEntityManager,
   entity: EntityName<T>,
-  paginationInput: QueryInput,
+  queryInput: QueryInput,
   whereQuery: FilterQuery<T>,
   populate?: readonly AutoPath<T, P>[] | boolean,
   orderByReplacement?: QueryOrderMap<T> | QueryOrderMap<T>[]
 ): Promise<PaginatedData<T>> => {
   const [data, total] = await manager.findAndCount(entity, whereQuery, {
-    limit: paginationInput.limit,
+    limit: queryInput.limit,
     orderBy:
       orderByReplacement ??
       ({
-        [paginationInput.sort ?? "id"]:
-          paginationInput.order ?? QueryOrder.DESC,
+        [queryInput.sort ?? "id"]: queryInput.order ?? QueryOrder.DESC,
       } as QueryOrderMap<T>),
-    offset: paginationInput.offset
-      ? paginationInput.offset
-      : paginationInput.page * (paginationInput.limit ?? 0),
+    offset: queryInput.offset
+      ? queryInput.offset
+      : queryInput.page * (queryInput.limit ?? 0),
     populate,
   })
 
-  const paginatedData = new PaginatedData<T>(data, total, paginationInput.limit)
+  const paginatedData = new PaginatedData<T>(data, total, queryInput.limit)
 
   return paginatedData
 }
 
 export const test = async () => {
-  const typeOrmDataSource = new DataSource({
-    username: "root",
-    password: "root",
-    database: "paginator-mikro",
-    type: "mysql",
-    synchronize: true,
-    entities: ["src/*.type.ts"],
-  })
+  // const typeOrmDataSource = new DataSource({
+  //   username: "root",
+  //   password: "root",
+  //   database: "paginator-type",
+  //   type: "mysql",
+  //   synchronize: true,
+  //   entities: ["src/*.type.ts"],
+  // })
 
-  await typeOrmDataSource.initialize()
+  // await typeOrmDataSource.initialize()
 
-  const typeManager: TypeOrmEntityManager =
-    typeOrmDataSource.createEntityManager()
+  // const qwdqw: TypeOrmEntityManager = typeOrmDataSource.createEntityManager()
 
-  const newTypeUser = typeManager.create(TypeUser, {
-    name: "alex",
-    address: "Aristotelous",
-    age: 24,
-    username: "alex1",
-  })
-
-  await typeManager.insert(TypeUser, newTypeUser)
+  // const k = await typeManager.findAndCount(TypeUser, { relations: [] })
 
   const mikro = await MikroORM.init()
 
-  const MikroOrmManager: MikroOrmEntityManager =
-    mikro.em.fork() as MikroOrmEntityManager
+  const mikroManager = mikro.em.fork() as EntityManager
 
-  const newUser = MikroOrmManager.create(User, {
-    name: "alex",
-    address: "Aristotelous",
-    age: 24,
-    username: "alex1",
-  })
+  const k = await mikroManager.find()
 
-  await MikroOrmManager.persistAndFlush(newUser)
+  // const k = await paginate(TypeUser, typeManager, {
+  //   limit: 0,
+  //   page: 0,
+  // })
+
+  // const typeUsers = generate10TypeUsers(typeManager)
+
+  // await typeManager.insert(TypeUser, typeUsers)
+
+  // const mikroUsers = generate10MikroUsers(MikroOrmManager)
+
+  // await MikroOrmManager.persistAndFlush(mikroUsers)
 }
 
 test().catch((e) => {

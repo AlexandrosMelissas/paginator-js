@@ -2,7 +2,7 @@ import { Entity, BaseEntity, Column, PrimaryColumn } from "typeorm"
 import { v4 } from "uuid"
 
 @Entity()
-export class User extends BaseEntity {
+export class TypeUser extends BaseEntity {
   @PrimaryColumn()
   id: string = v4()
 
@@ -11,6 +11,9 @@ export class User extends BaseEntity {
 
   @Column()
   username: string
+
+  @Column()
+  email: string
 
   @Column()
   address: string
