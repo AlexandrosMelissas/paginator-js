@@ -4,8 +4,9 @@ import {
   QueryOrder,
   QueryOrderMap,
   MikroORM,
+  EntityManager as MikroOrmEntityManager,
+  EntityManager,
 } from "@mikro-orm/core"
-import { EntityManager as MikroOrmEntityManager } from "@mikro-orm/mysql"
 import {
   EntityManager as TypeOrmEntityManager,
   EntityTarget,
@@ -14,6 +15,7 @@ import {
 } from "typeorm"
 import { AutoPath } from "@mikro-orm/core/typings"
 import { PaginatedData, QueryInput } from "./typings"
+import { MikroUser } from "./User.mikro"
 export const paginate = async <
   T,
   M extends MikroOrmEntityManager | TypeOrmEntityManager,
@@ -29,6 +31,7 @@ export const paginate = async <
     ? readonly AutoPath<T, P>[] | boolean
     : FindOptionsRelations<T>
 ): Promise<PaginatedData<T>> => {
+  // TODO Figure out a way to identify types based on instance so that we dont use AS keyword
   if (manager instanceof MikroOrmEntityManager) {
     return await paginateMikroOrm(
       manager,
@@ -75,8 +78,9 @@ export const paginateMikroOrm = async <T, P extends string>(
   populate?: readonly AutoPath<T, P>[] | boolean,
   orderByReplacement?: QueryOrderMap<T> | QueryOrderMap<T>[]
 ): Promise<PaginatedData<T>> => {
+  // Find and count
   const [data, total] = await manager.findAndCount(entity, whereQuery, {
-    limit: queryInput.limit,
+    limit: queryInput.limit ?? undefined,
     orderBy:
       orderByReplacement ??
       ({
@@ -113,7 +117,14 @@ export const test = async () => {
 
   const mikroManager = mikro.em.fork() as EntityManager
 
-  const k = await mikroManager.find()
+  const users = await paginate(
+    mikroManager,
+    MikroUser,
+    { page: 0, limit: 0 },
+    {}
+  )
+
+  console.log(users)
 
   // const k = await paginate(TypeUser, typeManager, {
   //   limit: 0,

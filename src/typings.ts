@@ -1,15 +1,13 @@
 import { EntityManager } from "@mikro-orm/core"
 import { EntityManager as MysqlEntityManager } from "@mikro-orm/mysql"
 
-export type Library = "mikro-orm" | "type-orm" | "knex-js"
-
 export enum PaginationOrder {
   ASC = "ASC",
   DESC = "DESC",
 }
 
 export interface QueryInput {
-  limit: number
+  limit?: number
   order?: PaginationOrder
   page: number
   sort?: string
